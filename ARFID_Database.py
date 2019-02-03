@@ -18,7 +18,9 @@ def setupQueries(studentDatabase, tapRecordDatabase):
         "importExcel" : "INSERT INTO "+studentDatabase+"(section, classNum, surname, firstName, middleName, gName, gNum, sex) VALUES ('{}',{},'{}','{}','{}','{}','{}','{}');",  #Format accordingly
         #Setup Database Rfid
         "searchSurname" : "select * from "+studentDatabase+" where surname='{}'", #Format with surname; returns list of people with the surname
-        "updateRfid" : "update "+studentDatabase+" set rfid='{}' where id='{}'" #Format with rfid, id
+        "updateRfid" : "update "+studentDatabase+" set rfid='{}' where id='{}'", #Format with rfid, id
+        #Email queries
+        "dateRange" : "select DATE_FORMAT(MIN(date), '%W, %M %D, %Y'), DATE_FORMAT(MAX(date), '%W, %M %D, %Y') from "+tapRecordDatabase+";" #Returns first and last date recorded
     }
     return queries
 
@@ -127,6 +129,13 @@ def importExcelToDb(filePath:str, sheetNames:list):
             cursor.execute(queries["importExcel"].format(a,b,c,d,e,f,g,h))
     # cnx.commit() #Send the data to mysql [THIS WILL WRITE ON THE DATABASE]
 
+# Returns first and last dates of tap
+def dateRange():
+    cursor.execute(queries["dateRange"])
+    for min, max in cursor:
+        print(min, max)
+        return min, max
+
 
 
 # Test if these functions work
@@ -142,8 +151,10 @@ if __name__ == "__main__":
     setupDbCon(dbUser, dbName)
 
     while(True):
-        choice = input("\nWhat do you want to test:\n1) Record tap in database\n2) Update RFID in database\n3) Import from Excel classlist to Database\n[1/2/3/x]: ")
+        choice = input("\nWhat do you want to test:\n1) Record tap in database\n2) Update RFID in database\n"
+                       "3) Import from Excel classlist to Database\n4) Get first and last tap dates\n[1/2/3/4/x]: ")
         if(choice == "1"): recordTapDb(rfid)
         elif(choice == "2"): updateDbRfid(rfid)
         elif(choice == "3"): importExcelToDb(classList, ['11-Hernandez', '11-Banzon', '11-Sycip'])
+        elif(choice == "4"): dateRange()
         else: break

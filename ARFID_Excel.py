@@ -13,7 +13,9 @@ def deciToLetters(deci):
 
 # Create Excel sheet per section
 def createExcelAttendance(section):
-    workbook = xlsxwriter.Workbook("Excel Records/"+section+'_ARFID_Records_'+datetime.datetime.today().strftime('%b%e,%Y')+'.xlsx')
+    excelName = 'Excel Records/'+section+'_ARFID_Records_'+datetime.datetime.today().strftime('%b%#e,%Y')+'.xlsx'
+
+    workbook = xlsxwriter.Workbook(excelName)
     worksheet = workbook.add_worksheet(section + ' Attendance')
 
     header = workbook.add_format({'bold': True, 'align':'center', 'bottom':6})
@@ -103,7 +105,7 @@ def createExcelAttendance(section):
 
     workbook.close()
     print(workbook.filename, "created.")
-
+    return excelName
 
 
 # Test if these functions work

@@ -7,15 +7,48 @@ from os.path import basename
 emailUser = 'upisarfid@gmail.com'
 emailPass = 'JABeagle'
 
-def sendEmail(subject: str, text: str, to: list, bcc: list, files= None, username: str= emailUser, password: str= emailPass,):
+teachers = {
+    "Pineda, L." : {"name" : "Ms. Laurice A. Pineda",
+                    "email" : "lapineda@up.edu.ph"},
+    "Guerrero, C." : {"name" : "Prof. Charlaine G. Guerrero",
+                      "email" : "cgguerrero@up.edu.ph"},
+    "Macapagal, M." : {"name" : "Mr. Molave Nemesio C. Macapagal",
+                       "email" : "mcmacapagal2@up.edu.ph"},
+    "Prieto, C." : {"name" : "Bb. Mary Christine C. Prieto",
+                    "email" : "mcprieto@up.edu.ph"},
+    "Baygan, M." : {"name" : "Ms. Maria Araceli M. Baygan",
+                    "email" : ""},  #Email
+    "Ereno, R." : {"name" : "Prof. Rhodora F. Ereno",   #Prof
+                   "email" : ""},   #Email
+    "Velasquez, R." : {"name" : "Prof. Roselle J. Velasquez",
+                       "email" : ""},   #Email
+    "Taduran, R." : {"name" : "Prof. Regina Carla R. Taduran",
+                     "email" : ""},    #Email
+    "Vargas, M." : {"name" : "Prof. Ma. Lourdes J. Vargas",
+                    "email" : "vargasdet@gmail.com"},
+    "Sarabia, C." : {"name" : "Christian Sarabia",
+                     "email" : "magorcs@gmail.com"}
+}
+
+def writeEmail(section, teacher, minDate, maxDate):
+    subject = "ARFID: " + section + " Attendance Record"
+
+    msg = teachers[teacher]["name"] + "\n\nHere is the attendance record of {} from {} to {}.\n".format(section, minDate, maxDate)
+    msg += "\nThis message is created and sent by ARFID. ARFID is an automated RFID-based attendance system that records and tallies " \
+           "attendance to provide efficiency and accuracy. For any concerns, please email to me: upisarfid@gmail.com"
+    return subject, msg
+
+def sendEmail(subject: str, text: str, to: str, bcc: list= None, files= None, username: str= emailUser, password: str= emailPass,):
     try:
         send_from = username
         bcc = ['upisarfid@gmail.com'] if not bcc else ['upisarfid@gmail.com'] + bcc #Sends a copy to itself
-        send_to = to + bcc
+        to = teachers[to]["email"]
+
+        send_to = bcc + [to]
 
         msg = MIMEMultipart()
         msg['From'] = send_from
-        msg['To'] = ', '.join(to)
+        msg['To'] = to
         msg['Subject'] = subject
 
         msg.attach(MIMEText(text))
@@ -40,13 +73,29 @@ def sendEmail(subject: str, text: str, to: list, bcc: list, files= None, usernam
         return False
 
 
+
 # Test if these functions work
 if __name__ == "__main__":
+    from ARFID_Database import *
+
+    dbUser = "cs"
+    dbName = "test"
+
+    queries = setupQueries("students20", "tapRecords")
+    cnx, cursor = setupDbCon(dbUser, dbName)
+
+    min, max = dateRange()
+
+    section = "Banzon"
+    teacher = "Sarabia, C."
+    sectionFile = "Excel Records/Banzon_ARFID_Records_Feb4,2019.xlsx"
+
+    subject, msg = writeEmail(section, teacher, min, max)
 
     sendEmail(
-    subject="Test Banzon Attendance5",
-    text="Thesis test\nThis is created and sent by ARFID.\n Arf Arf!",
-    to= ['magorcs@gmail.com'],  #,'brettborja@gmail.com','corojpn@gmail.com','nicolasmarew@gmail.com','dediosjoshua11@gmail.com'],
-    bcc= ['upisarfid@gmail.com'],    #,'magorcs@gmail.com'],
-    files= ["./Banzon_ARFID_Records_Feb 3,2019.xlsx","Hernandez_ARFID_Records_Feb 3,2019.xlsx","Sycip_ARFID_Records_Feb 3,2019.xlsx"]
+        subject= subject,
+        text= msg,
+        to= teacher,  #,'brettborja@gmail.com','corojpn@gmail.com','nicolasmarew@gmail.com','dediosjoshua11@gmail.com'],
+        # bcc= []    #,'magorcs@gmail.com'],
+        files= [sectionFile]
     )
