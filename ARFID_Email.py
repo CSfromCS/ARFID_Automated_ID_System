@@ -34,8 +34,8 @@ def writeEmail(section, teacher, minDate, maxDate):
     subject = "ARFID: " + section + " Attendance Record"
 
     msg = teachers[teacher]["name"] + "\n\nHere is the attendance record of {} from {} to {}.\n".format(section, minDate, maxDate)
-    msg += "\nThis message is created and sent by ARFID. ARFID is an automated RFID-based attendance system that records and tallies " \
-           "attendance to provide efficiency and accuracy. For any concerns, please email to me: upisarfid@gmail.com"
+    msg += "\n______________________________________________________________\nThis message is created and sent by ARFID. ARFID is an automated RFID-based attendance system that records and tallies " \
+           "attendance to provide efficiency and accuracy. For any concerns, please email: upisarfid@gmail.com"
     return subject, msg
 
 def sendEmail(subject: str, text: str, to: str, bcc: list= None, files= None, username: str= emailUser, password: str= emailPass,):

@@ -12,7 +12,7 @@ def deciToLetters(deci):
     return output
 
 # Create Excel sheet per section
-def createExcelAttendance(section):
+def createExcelAttendance(section, queries, cursor):
     excelName = 'Excel Records/'+section+'_ARFID_Records_'+datetime.datetime.today().strftime('%b%#e,%Y')+'.xlsx'
 
     workbook = xlsxwriter.Workbook(excelName)
@@ -72,7 +72,7 @@ def createExcelAttendance(section):
         col = len(labels) + days.index(date)
         worksheet.write_datetime(classNum, col, datetime.datetime.strptime(time,"%H:%M %p"), timeCell)
 
-    rawTimeLate = "10:15"   # %H:%M
+    rawTimeLate = "7:10"   # %H:%M
     timeLate = datetime.datetime.strptime(rawTimeLate, "%H:%M")
 
     # Total on time, late, absent per student #Header
@@ -120,4 +120,4 @@ if __name__ == "__main__":
 
     sections = ['Hernandez','Banzon','Sycip']
     for section in sections:
-        createExcelAttendance(section)
+        createExcelAttendance(section, queries, cursor)

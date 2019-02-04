@@ -7,3 +7,4 @@ def displayJS():
 
 # Test if these functions work
 if __name__ == "__main__":
+    pass
