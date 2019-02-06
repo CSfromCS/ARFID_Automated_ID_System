@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+	<html>
+	<head>
+		<title>Admin
+		</title>
+		<style>
+			body{
+				margin-top:3%;
+				margin-bottom:5%;
+				margin-left:5%;
+				margin-right:5%;
+				font-family:'trebuchet ms';
+				text-align:center;
+			}
+			button{
+				color:black;
+				border:3px black solid;
+				background-color:white;
+				font-size: 15pt;
+				border-radius:100px;
+				font-family:'trebuchet ms';
+				padding: 1.0%;
+				transition-duration: 0.4s;
+				width:30%;
+			}
+			.out{
+				color:black;
+				border:3px black solid;
+				background-color:white;
+				font-size: 12pt;
+				border-radius:100px;
+				font-family:'trebuchet ms';
+				padding: 0.5%;
+				transition-duration: 0.4s;
+				width:15%;
+			}
+			button:hover{
+				background-color:#B06D29;
+				border:3px #B06D29 solid;
+				color:white;
+				transition-duration: 0.4s;
+			}
+			#cropped{
+				height:15%;
+				width:15%;
+			}
+		</style>
+		<script>
+			function lipat(x){
+				if(x==0){window.location="BANZON.html";}				
+				else if(x==1){window.location="HERNANDEZ.html";}
+				else if(x==2){window.location="SYCIP.html"}
+				else if(x==3){
+					var r=confirm("You are about to sign out. Would you like to continue?");
+					if(r==true){
+					window.location="HOME.html"}
+				}	
+			}
+		</script>
+	</head>
+	<body>
+			<div class="lalagyan">
+			<img src="images/beagles crop.png" id="cropped" name="cropped">
+			</div>
+			
+			<h1>Choose a section.</h1>
+			<button type="button" onclick="lipat(0)">11-J.A. Banzon</button><br><br>
+			<button type="button" onclick="lipat(1)">11-A.V. Hernandez</button><br><br>
+			<button type="button" onclick="lipat(2)">11-W.Z. Sycip</button>
+			<br><br><br>
+			<button type="button" onclick="lipat(3)" class="out">SIGN OUT</button>
+	</body>
+</html>
