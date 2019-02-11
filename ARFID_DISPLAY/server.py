@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, abort
 import mysql.connector
 import threading, webbrowser
-import time
+import os, subprocess
 
 app = Flask(__name__)
 
@@ -54,10 +54,12 @@ def display_section():
 def display_student(student=None):
 	return render_template("student.html", student=student)
 
-# webbrowser.get('chrome')
+def browserInit():
+	CHROME = os.path.join('C://','Program Files (x86)','Google','Chrome','Application','chrome.exe')
+	subprocess.call([CHROME, "--app=http://127.0.0.1:5000"])
 
 if __name__ == "__main__":
-	threading.Timer(1.25, lambda: webbrowser.open_new("http://127.0.0.1:5000")).start()
+	threading.Timer(1.25, lambda: browserInit()).start()
 	app.run(debug=False)
 
 
