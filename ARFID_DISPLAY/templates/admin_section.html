@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ARFID System | Student Roster</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<h1>ARFID System</h1>
+
+	<form method="POST" action="">
+		<input type="submit" name="section" value="11-Banzon" />
+		<input type="submit" name="section" value="11-Hernandez" />
+		<input type="submit" name="section" value="11-Sycip" />
+	</form>
+	
+	<div class="result">
+		{% if data and section %}
+		<table>
+			<tr>
+				{% for data in colheads %}
+				<th>{{ data }}</th>
+				{% endfor %}
+			</tr>
+			{% for row in data %}
+			<tr>
+				{% for col in row %}
+				<td>{{ col }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</table>
+		{% endif %}
+	</div>
+</body>
+</html>
