@@ -2,7 +2,6 @@ import serial
 import serial.tools.list_ports
 import time
 
-
 # Checks if the Arduino rfid scanner and sim module is active; resets arduino if not
 def checkArduino():
     try:
@@ -13,8 +12,13 @@ def checkArduino():
         ]
 
         ser = serial.Serial(arduino_ports[0], 9600)
-        print("Connected to arduino rfid and sim module through port {}.".format(arduino_ports[0]))
-        return True
+        print("Connected to arduino through port '{}'.".format(arduino_ports[0]))
+
+        ## Insert test for rfid reader
+        ## Insert test for sim module
+
+        print("Connected to rfid and sim module through port '{}'.".format(arduino_ports[0]))
+        return ser
     except Exception as e:
         print(e)
         print("Retrying in 5 seconds...")
@@ -22,8 +26,13 @@ def checkArduino():
         checkArduino()
 
 # Wait for an rfid card and return its UID
-def scan():
-    return input("RFID UID: ")  #Temporary, while I don't have an arduino at hand
+def scan(ser):
+    print("\nScanning...\n")
+    while True:
+        line = str(ser.readline())
+        print(line)
+        return line[3:-5]
+    # return input("RFID UID: ")  #Temporary, while I don't have an arduino at hand
 
 # Instruct Arduino to send an SMS message to guardian
 def sendSMS(firstName, gName, gNum, date, time):
@@ -34,7 +43,8 @@ def sendSMS(firstName, gName, gNum, date, time):
 
 # Test if these functions work
 if __name__ == "__main__":
-    if (checkArduino()):
+    ser = checkArduino()
+    if (ser):
         print("Arduino found!")
 
         rfid = scan()

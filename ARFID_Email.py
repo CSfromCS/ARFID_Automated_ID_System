@@ -18,12 +18,12 @@ teachers = {
                     "email" : "mcprieto@up.edu.ph"},
     "Baygan, M." : {"name" : "Ms. Maria Araceli M. Baygan",
                     "email" : ""},  #Email
-    "Ereno, R." : {"name" : "Prof. Rhodora F. Ereno",   #Prof
+    "Ereno, R." : {"name" : "Prof. Rhodora F. Ereno",
                    "email" : ""},   #Email
     "Velasquez, R." : {"name" : "Prof. Roselle J. Velasquez",
                        "email" : ""},   #Email
     "Taduran, R." : {"name" : "Prof. Regina Carla R. Taduran",
-                     "email" : ""},    #Email
+                     "email" : "rrtaduran@up.edu.ph"},
     "Vargas, M." : {"name" : "Prof. Ma. Lourdes J. Vargas",
                     "email" : "vargasdet@gmail.com"},
     "Sarabia, C." : {"name" : "Christian Sarabia",
@@ -61,13 +61,19 @@ def sendEmail(subject: str, text: str, to: str, bcc: list= None, files= None, us
             msg.attach(attachedFile)
 
         smtp = smtplib.SMTP(host="smtp.gmail.com", port= 587)
-        smtp.starttls()
-        smtp.login(username,password)
-        print("Logged in.")
-        smtp.sendmail(send_from, send_to, msg.as_string())
-        print("Email sent!")
-        smtp.close()
-        return True
+        try:
+            smtp.starttls()
+            smtp.login(username,password)
+            print("Logged in.")
+            # smtp.sendmail(send_from, send_to, msg.as_string())
+            print("Message: {}".format(msg.as_string()))
+            print("Email sent!")
+            return True
+        except Exception as f:
+            print("Error in sendEmail()*", f)
+            return False
+        finally:
+            smtp.close()
     except Exception as e:
         print("Error in sendEmail()", e)
         return False

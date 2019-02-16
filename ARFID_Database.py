@@ -4,7 +4,6 @@ import time
 
 # Setup queries according to databases in use
 def setupQueries(studentDatabase, tapRecordDatabase):
-    global queries
     queries = {
         #Tap and Record
         "searchRfid" : "SELECT id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid FROM "+studentDatabase+" WHERE rfid = '{}'", #format with rfid; returns student info
@@ -30,7 +29,6 @@ def setupQueries(studentDatabase, tapRecordDatabase):
 def setupDbCon(user, database):
     try:
         # Setup MySql connection
-        global cnx, cursor
         cnx = mysql.connector.connect(user=user, database=database)
         cursor = cnx.cursor()
         print("Connected to database {}, with user {}.".format(database,user))
@@ -43,10 +41,10 @@ def setupDbCon(user, database):
 
 
 # Search the students database for the rfid and return info or False
-def searchDb(rfid):
+def searchDb(rfid, queries, cursor):
     cursor.execute(queries.get("searchRfid").format(rfid))
     for (id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid) in cursor:
-        print("{} has tapped with rfid code {}.".format(firstName, rfid))
+        print("Tapped with rfid code {}.".format(firstName, rfid))
         print("Name:", firstName, middleName, surname, "Sex:", sex)
         print("Section:", section)
         print("Class Number:", classNum, "Student ID:", id)
@@ -56,7 +54,7 @@ def searchDb(rfid):
     return False
 
 # Record on the records database the studentId, date, and time of tap
-def recordTapDb(rfid, tapper=False):
+def recordTapDb(rfid, queries, cnx, cursor, tapper=False):
     try:
         studentId = tapper[0] if tapper else None
         if(tapper): cursor.execute(queries["recordTapA"].format(rfid, studentId))
@@ -67,9 +65,9 @@ def recordTapDb(rfid, tapper=False):
         print("Error in recordDb()", e)
 
 # Update students database with the new rfid
-def updateDbRfid(rfid):
+def updateDbRfid(rfid, queries, cnx, cursor):
 
-    def chooseSurname():  # Checks the database for the SURNAME and returns a person's row
+    def chooseSurname(queries, cursor):  # Checks the database for the SURNAME and returns a person's row
         surname = input("What is the SURNAME of the new owner? [Enter surname] ")
         results = []
         cursor.execute(queries["searchSurname"].format(surname))
@@ -94,7 +92,7 @@ def updateDbRfid(rfid):
                             print("Invalid id, choose from the list.")
         else:
             if (input("No result found. Do you want to try again? [y/n] ") == 'y'):
-                return chooseSurname()
+                return chooseSurname(queries, cursor)
             else:
                 print("Ended.")
 
@@ -107,17 +105,17 @@ def updateDbRfid(rfid):
             except Exception as e:
                 print("Error occurred.\n", e)
 
-    rfidHolder = searchDb(rfid)
+    rfidHolder = searchDb(rfid, queries, cursor)
     if(rfidHolder):
         print("This card is already registered to {} {} {}.".format(rfidHolder[0], rfidHolder[3], rfidHolder[2]))
         if(input("Do you want to register this card to another row? [y/n] ") == 'y'):
-            row = chooseSurname()
+            row = chooseSurname(queries, cursor)
             if(row):
                 askUpdateRfid(rfid, row)
         else:
             print("Ended.")
     else:
-        row = chooseSurname()
+        row = chooseSurname(queries, cursor)
         if(row):
             askUpdateRfid(rfid, row)
 
@@ -132,7 +130,7 @@ def importExcelToDb(filePath:str, sheetNames:list):
     # cnx.commit() #Send the data to mysql [THIS WILL WRITE ON THE DATABASE]
 
 # Returns first and last dates of tap
-def dateRange():
+def dateRange(queries, cursor):
     cursor.execute(queries["dateRange"])
     for min, max in cursor:
         print(min, max)
@@ -142,21 +140,21 @@ def dateRange():
 
 # Test if these functions work
 if __name__ == "__main__":
-    rfid = "CE 17 8B 32"    #In place for scan()
+    rfid = "CE 17 8B 22"    #In place for scan()
 
     classList = "D:\Christiaaan's\Academic\Grade 11\Thesis\Data\School Student Roster Nov26.xlsx"
 
     dbUser = "cs"
     dbName = "test"
 
-    setupQueries("students20","tapRecords")
-    setupDbCon(dbUser, dbName)
+    queries = setupQueries("students20","tapRecords")
+    cnx, cursor = setupDbCon(dbUser, dbName)
 
     while(True):
         choice = input("\nWhat do you want to test:\n1) Record tap in database\n2) Update RFID in database\n"
                        "3) Import from Excel classlist to Database\n4) Get first and last tap dates\n[1/2/3/4/x]: ")
-        if(choice == "1"): recordTapDb(rfid, searchDb(rfid))
-        elif(choice == "2"): updateDbRfid(rfid)
+        if(choice == "1"): recordTapDb(rfid, searchDb(rfid, cursor))
+        elif(choice == "2"): updateDbRfid(rfid, cnx, cursor)
         elif(choice == "3"): importExcelToDb(classList, ['11-Hernandez', '11-Banzon', '11-Sycip'])
         elif(choice == "4"): dateRange()
         else: break
