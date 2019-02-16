@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 config = {
 	'user': 'root',
-	'password': '10432200bcAt',
+	'password': '',
 	'host': '127.0.0.1',
 	'database': 'attendance_system',
 	'raise_on_warnings': True
@@ -60,7 +60,7 @@ def browserInit():
 
 if __name__ == "__main__":
 	threading.Timer(1.25, lambda: browserInit()).start()
-	app.run(debug=False)
+	app.run(debug=True)
 
 
 
