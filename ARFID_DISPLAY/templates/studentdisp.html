@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ARFID Administrator Page</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<div class="content">
+		<h1>ARFID System</h1>
+		<h2>Student Display (TEST)</h2>
+		{% block body %}
+		{% if session['logged_in'] %}
+			<form method="POST" action="{{ url_for('studentdisp') }}">
+				<label>Student's Surname: <input type="text" name="student_lname"></label>
+				<button type="submit">Submit</button>
+			</form>
+			{% if student_data  %}
+				<table class="roster">
+					{% for row in student_data  %}
+						<tr>
+							{% for data in row %}
+								<td>{{ data }}</td>
+							{% endfor %}
+						</tr>
+					{% endfor%}
+				</table>
+			{% endif %}
+		{% else %}
+		<strong>Access forbidden. You are not logged in!</strong>
+		{% endif %}
+		{% endblock %}
+	</div>
+</body>
+</html>
+
