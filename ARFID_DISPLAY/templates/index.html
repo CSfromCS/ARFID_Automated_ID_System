@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>ARFID System | Home</title>
+	<title>ARFID System</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-	<h1>ARFID System</h1>
-	<p>Welcome!</p>
-
-	<form method="POST" action="/">
-		<input type="submit" name="page" value="Admin">
-		<input type="submit" name="page" value="Student">
-	</form>
-	
+	<div class="content">
+		<h1>ARFID System</h1>
+		<h2>Welcome!</h2>
+		<form name="home_form" method="POST" action="{{ url_for('index') }}">
+			<button type="submit" name="page" value="admin">Admin</button>
+			<button type="submit" name="page" value="student">Student</button>
+		</form>
+	</div>
 </body>
 </html>
