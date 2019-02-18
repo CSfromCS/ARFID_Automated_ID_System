@@ -1,3 +1,0 @@
-# ARFID System Flask Application
-
-
