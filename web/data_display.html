@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Data Display</title>
+	<meta charset="UTF-8">
+	<script type="text/javascript" src="/eel.js"></script>
+	<script type="text/javascript">
+		<!--document.title = "Data Display";-->
+
+		<!--eel.expose(writeToHTML);-->
+		<!--function writeToHTML(table){-->
+			<!--document.body.innerHTML += table;-->
+		<!--}-->
+
+		<!--eel.expose(helloMarew);-->
+		<!--function helloMarew(){-->
+			<!--alert('Hello Marew!');-->
+		<!--}-->
+
+		<!--eel.expose(updateInfo);-->
+		function updateInfo(){
+			student = eel.somefunction();
+			document.getElementById('name').innerHTML = student[3] + " " + student[2];
+			document.getElementById('section').innerHTML = student[6];
+		}
+
+	</script>
+	<link type="text/css" rel="stylesheet" href="/css/style.css"></style>
+</head>
+<body>
+	<a href="main.html">main</a>
+	<h1 id="name"></h1>
+	<h2 id="section"></h2>
+	<button onclick="updateInfo()">Click me</button>
+</body>
+</html>
