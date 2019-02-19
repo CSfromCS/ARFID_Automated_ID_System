@@ -42,7 +42,7 @@ def setupDbCon(user, database):
 
 # Search the students database for the rfid and return info or False
 def searchDb(rfid, queries, cursor):
-    cursor.execute(queries.get("searchRfid").format(rfid))
+    cursor.execute(queries["searchRfid"].format(rfid))
     for (id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid) in cursor:
         print("Tapped with rfid code {}.".format(firstName, rfid))
         print("Name:", firstName, middleName, surname, "Sex:", sex)
@@ -140,7 +140,7 @@ def dateRange(queries, cursor):
 
 # Test if these functions work
 if __name__ == "__main__":
-    rfid = "CE 17 8B 22"    #In place for scan()
+    rfid = "E1 B7 D0 2D"    #In place for scan()
 
     classList = "D:\Christiaaan's\Academic\Grade 11\Thesis\Data\School Student Roster Nov26.xlsx"
 
@@ -153,8 +153,8 @@ if __name__ == "__main__":
     while(True):
         choice = input("\nWhat do you want to test:\n1) Record tap in database\n2) Update RFID in database\n"
                        "3) Import from Excel classlist to Database\n4) Get first and last tap dates\n[1/2/3/4/x]: ")
-        if(choice == "1"): recordTapDb(rfid, searchDb(rfid, cursor))
-        elif(choice == "2"): updateDbRfid(rfid, cnx, cursor)
+        if(choice == "1"): recordTapDb(rfid, queries, cnx, cursor, searchDb(rfid, queries, cursor))
+        elif(choice == "2"): updateDbRfid(rfid, queries, cnx, cursor)
         elif(choice == "3"): importExcelToDb(classList, ['11-Hernandez', '11-Banzon', '11-Sycip'])
         elif(choice == "4"): dateRange()
         else: break

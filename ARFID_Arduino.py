@@ -18,26 +18,53 @@ def checkArduino():
         ## Insert test for sim module
 
         print("Connected to rfid and sim module through port '{}'.".format(arduino_ports[0]))
+
+        while (True):
+            ser.write(b'1\n')
+            fromArduino = readSerial(ser)
+            if("Ready" in fromArduino):
+                print("Rfid scanner ready.")
+                break
+
+        # while (True):
+        #     ser.write(b'2\n')    #I dont have sim yet
+        #     fromArduino = readSerial(ser)
+        #     if("Ready" in fromArduino):
+        #         print("GSM ready.")
+        #         break
+
         return ser
     except Exception as e:
         print(e)
         print("Retrying in 5 seconds...")
         time.sleep(5)
-        checkArduino()
+        return checkArduino()
+
+def readSerial(ser):
+    line = str(ser.readline())[2:-5]
+    return line
 
 # Wait for an rfid card and return its UID
 def scan(ser):
+    ser.write(b'3\n')
     print("\nScanning...\n")
-    while True:
-        line = str(ser.readline())
+    line = ""
+    while("UID" not in line):
+        line = readSerial(ser)
         print(line)
-        return line[3:-5]
+    ser.write(b'x\n')
+    return line[5:]
     # return input("RFID UID: ")  #Temporary, while I don't have an arduino at hand
 
 # Instruct Arduino to send an SMS message to guardian
-def sendSMS(firstName, gName, gNum, date, time):
+def sendSMS(ser, student):
+    ser.write(b'4\n')
+    time.sleep(0.2)
+    ser.write(bytes(student[8]+'\n', 'utf-8'))
+    time.sleep(0.1)
+    ser.write(b"THIS IS SENT BY ARFID\n")
+    while("COMPLETE" not in readSerial(ser)): pass
     print("Message sent!")
-    pass
 
 
 
@@ -47,9 +74,11 @@ if __name__ == "__main__":
     if (ser):
         print("Arduino found!")
 
-        rfid = scan()
+        rfid = scan(ser)
         print(rfid,"tapped!")
 
-        sendSMS("Test Student", "Test Guardian", "09178024116", "Date Here", "Time Here")
+        sampleStudent = ("92", "42", "Nicolas", "Marew", "Cruz", "F", "Banzon", "Jorbeagle", "09276311408", "DE AD BE EF")
+
+        sendSMS(ser, sampleStudent)
     else:
         print("Arduino not found")
