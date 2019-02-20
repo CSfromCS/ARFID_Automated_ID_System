@@ -58,6 +58,7 @@ def scan(ser):
 
 # Instruct Arduino to send an SMS message to guardian
 def sendSMS(ser, student):
+    print("Sending message...")
     ser.write(b'4\n')
     time.sleep(0.2)
     ser.write(bytes(student[8]+'\n', 'utf-8'))

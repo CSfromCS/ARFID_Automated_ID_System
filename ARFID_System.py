@@ -23,7 +23,8 @@ class Arfid():
                 recordTapDb(rfid, self.queries, self.cnx, self.cursor, student)
                 print("Start!")
                 return student
-                sendSMS(self.ser, student)
+                # eel.updateInfo()(student)
+                # sendSMS(self.ser, student)
             else:
                 print("Unknown")
                 # Display false
@@ -49,9 +50,10 @@ class Arfid():
 
 arfid = Arfid("students20","tapRecords","cs","test")
 
-
+# arfid.startStudentPage()
 @eel.expose
 def somefunction():
+    print("Starting somefucntion")
     global arfid
     return arfid.startStudentPage()
 
