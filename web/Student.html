@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+		<html>
+		<head>
+			<title>Student</title>
+			<style>
+				body{	
+					margin:3%;
+					font-family:'trebuchet ms';
+				}
+				button{
+					color:black;
+					border:3px black solid;
+					background-color:white;
+					font-size: 12pt;
+					border-radius:100px;
+					font-family:'trebuchet ms';
+					padding: 0.5%;
+					transition-duration: 0.4s;
+					width:5%;
+					outline:none;
+				}
+				button:hover{
+					background-color:#B06D29;
+					border:3px #B06D29 solid;
+					color:white;
+					transition-duration: 0.4s;
+				}
+				img{
+					width:30%;
+					float:left;
+					margin-left:3%;
+				}
+				#content{
+					float:right;
+					margin-right:25%;
+					margin-top:5%;
+				}
+				#cropped, #content{
+					display:inline;
+				}
+				input{
+					color:black;
+					border:3px black solid;
+					background-color:white;
+					font-size: 15pt;
+					border-radius:100px;
+					font-family:'trebuchet ms';
+					padding: 2%;
+					margin:5%;
+					outline:none;
+					
+				}
+				input[type=text].pangalan{
+					width:50%;
+				}
+			</style>
+			<script type="text/javascript" src="/eel.js"></script>
+			<script>
+				function lipat(){window.location="HOME.html";}
+
+				function updateInfo(student){
+					if(student){
+						document.getElementById('name').value = student[3] + " " + student[2];
+						document.getElementById('section').value = student[6];
+						d = new Date();
+						document.getElementById('time').value = "Time in: " + d.toLocaleTimeString() + " " + d.toDateString();
+						<!--if(student-->
+						<!--document.getElementById('msg').innerHTML = "A message is being sent to " + student[7];-->
+						eel.callSendSMS();
+					}else{
+						document.getElementById('name').innerHTML = "Unknown rfid, please register card.";
+					}
+					startPage();
+				}
+
+				function startPage(){
+					eel.callStudentPage()(updateInfo);
+				}
+
+			</script>
+		</head>
+		<body onload="startPage()">
+			<button type="button" onclick="lipat()">BACK</button>
+			<br><br>
+			<div id="container">
+				<img src="beagles crop.png" id="cropped" name="cropped">
+				<div id="content">
+					<input type="text"id="name" placeholder="First name | Last name">
+					<input type="text" id="section" placeholder="Section">
+					<br>
+					<input type="text" id="time" placeholder="Time">
+				</div>
+			</div>
+		</body>
+	</html>

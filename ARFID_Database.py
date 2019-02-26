@@ -11,17 +11,17 @@ def setupQueries(studentDatabase, tapRecordDatabase):
         "recordTapB" : "INSERT INTO "+tapRecordDatabase+"(rfid, date, time) VALUES('{}', CURDATE(), CURTIME());",  #Format with rfid; records in database
         #Database to Excel
         "classList" : "SELECT classNum, surname, firstName, middleName, sex FROM "+studentDatabase+" where section='{}';",    #Format with section; returns section students
-        "listDays" : "select date_format(date,'%a, %e %b') from "+tapRecordDatabase+" group by date;", #Returns dates that have tap records
-        "classAttendance" : "select classNum, date_format(date,'%a, %e %b'), time_format(time, '%H:%i %p') from "+tapRecordDatabase+" " \
-                             "inner join "+studentDatabase+" on "+studentDatabase+".id="+tapRecordDatabase+".studentId where "+studentDatabase+".section='{}' "
-                            "group by "+tapRecordDatabase+".date, "+studentDatabase+".id;", #Format with section; returns students' tap dates and time
+        "listDays" : "SELECT date_format(date,'%a, %e %b') FROM "+tapRecordDatabase+" GROUP BY date;", #Returns dates that have tap records
+        "classAttendance" : "SELECT classNum, date_format(date,'%a, %e %b'), time_format(time, '%H:%i %p') FROM "+tapRecordDatabase+" " \
+                             "INNER JOIN "+studentDatabase+" ON "+studentDatabase+".id="+tapRecordDatabase+".studentId WHERE "+studentDatabase+".section='{}' "
+                            "GROUP BY "+tapRecordDatabase+".date, "+studentDatabase+".id;", #Format with section; returns students' tap dates and time
         #Excel to Database
         "importExcel" : "INSERT INTO "+studentDatabase+"(section, classNum, surname, firstName, middleName, gName, gNum, sex) VALUES ('{}',{},'{}','{}','{}','{}','{}','{}');",  #Format accordingly
         #Setup Database Rfid
-        "searchSurname" : "select * from "+studentDatabase+" where surname='{}'", #Format with surname; returns list of people with the surname
-        "updateRfid" : "update "+studentDatabase+" set rfid='{}' where id='{}'", #Format with rfid, id
+        "searchSurname" : "SELECT * FROM "+studentDatabase+" WHERE surname LIKE '%{}%'", #Format with surname; returns list of people with the surname
+        "updateRfid" : "UPDATE "+studentDatabase+" SET rfid='{}' WHERE id='{}'", #Format with rfid, id
         #Email queries
-        "dateRange" : "select DATE_FORMAT(MIN(date), '%W, %M %D, %Y'), DATE_FORMAT(MAX(date), '%W, %M %D, %Y') from "+tapRecordDatabase+";" #Returns first and last date recorded
+        "dateRange" : "SELECT DATE_FORMAT(MIN(date), '%W, %M %D, %Y'), DATE_FORMAT(MAX(date), '%W, %M %D, %Y') FROM "+tapRecordDatabase+";" #Returns first and last date recorded
     }
     return queries
 
@@ -30,14 +30,14 @@ def setupDbCon(user, database):
     try:
         # Setup MySql connection
         cnx = mysql.connector.connect(user=user, database=database)
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(buffered = True)
         print("Connected to database {}, with user {}.".format(database,user))
         return cnx, cursor
     except Exception as e:
         print(e)
         print("Retrying in 5 seconds...")
         time.sleep(5)
-        setupDbCon(user, database)
+        return setupDbCon(user, database)
 
 
 # Search the students database for the rfid and return info or False
@@ -55,14 +55,14 @@ def searchDb(rfid, queries, cursor):
 
 # Record on the records database the studentId, date, and time of tap
 def recordTapDb(rfid, queries, cnx, cursor, tapper=False):
-    try:
-        studentId = tapper[0] if tapper else None
-        if(tapper): cursor.execute(queries["recordTapA"].format(rfid, studentId))
-        else:   cursor.execute(queries["recordTapB"].format(rfid))
-        cnx.commit()
-        print("Recorded {} - {} in database.".format(studentId if studentId else "unknown", rfid))
-    except Exception as e:
-        print("Error in recordDb()", e)
+    # try:
+    studentId = str(tapper[0]) if tapper else False
+    if(studentId): cursor.execute(queries["recordTapA"].format(rfid, studentId))
+    else:   cursor.execute(queries["recordTapB"].format(rfid))
+    cnx.commit()
+    print("Recorded {} - {} in database.".format(studentId if studentId else "unknown", rfid))
+    # except Exception as e:
+    #     print("Error in recordTapDb()", e)
 
 # Update students database with the new rfid
 def updateDbRfid(rfid, queries, cnx, cursor):
@@ -76,7 +76,7 @@ def updateDbRfid(rfid, queries, cnx, cursor):
         if (rows != 0):
             print("\n{} found.".format(rows))
             cursor.execute(queries["searchSurname"].format(surname))
-            print("id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid")
+            # print("id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid")
             for (id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid) in cursor:
                 print(id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid)
                 results.append((id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid))
@@ -84,12 +84,13 @@ def updateDbRfid(rfid, queries, cnx, cursor):
                 return results[0]
             else:
                 while(True):
-                    id = input("Who do you want to own the RFID Card? [Enter the id] ")
+                    id = str(input("Who do you want to own the RFID Card? [Enter the id] "))
                     for result in results:
-                        if (row[0] == id):
+                        print(result[0], id)
+                        if (str(result[0]) == id):
                             return result
-                        else:
-                            print("Invalid id, choose from the list.")
+                    else:
+                        print("Invalid id, choose from the list.")
         else:
             if (input("No result found. Do you want to try again? [y/n] ") == 'y'):
                 return chooseSurname(queries, cursor)
@@ -123,11 +124,15 @@ def updateDbRfid(rfid, queries, cnx, cursor):
 def importExcelToDb(filePath:str, sheetNames:list):
     for sheetName in sheetNames:
         df = pd.read_excel(filePath, sheet_name=sheetName)
-        for(a,b,c,d,e,f,g,h) in zip(\
-            df['Section'], df['Class Number'], df['Surname'], df['First Name'], df['Middle Name'], df['Guardian Name'], df["Guardian's Number"], df['Sex']):
-            print(a,b,c,d,e,h)
+        for(a,b,c,d,e,f,g,h,i) in zip(\
+            df['Section'], df['Class Number'], df['Surname'], df['First Name'], df['Middle Name'], df['Guardian Name'], df["Guardian's Number"], df['Sex'], df['RFID']):
+            print(a,b,c,d,e,h,i)
             cursor.execute(queries["importExcel"].format(a,b,c,d,e,f,g,h))
     # cnx.commit() #Send the data to mysql [THIS WILL WRITE ON THE DATABASE]
+
+# Move database data to excel
+# def exportDbToExcel(filePath:str, sheetNames:list):
+
 
 # Returns first and last dates of tap
 def dateRange(queries, cursor):
@@ -140,7 +145,8 @@ def dateRange(queries, cursor):
 
 # Test if these functions work
 if __name__ == "__main__":
-    rfid = "E1 B7 D0 2D"    #In place for scan()
+    from ARFID_Arduino import *  #for scan()
+    ser = checkArduino()
 
     classList = "D:\Christiaaan's\Academic\Grade 11\Thesis\Data\School Student Roster Nov26.xlsx"
 
@@ -151,10 +157,13 @@ if __name__ == "__main__":
     cnx, cursor = setupDbCon(dbUser, dbName)
 
     while(True):
-        choice = input("\nWhat do you want to test:\n1) Record tap in database\n2) Update RFID in database\n"
-                       "3) Import from Excel classlist to Database\n4) Get first and last tap dates\n[1/2/3/4/x]: ")
+        # choice = input("\nWhat do you want to test:\n1) Record tap in database\n2) Update RFID in database\n"
+        #                "3) Import from Excel classlist to Database\n4) Get first and last tap dates\n[1/2/3/4/x]: ")
+        choice= "2"
         if(choice == "1"): recordTapDb(rfid, queries, cnx, cursor, searchDb(rfid, queries, cursor))
-        elif(choice == "2"): updateDbRfid(rfid, queries, cnx, cursor)
+        elif(choice == "2"):
+            rfid = scan(ser)
+            updateDbRfid(rfid, queries, cnx, cursor)
         elif(choice == "3"): importExcelToDb(classList, ['11-Hernandez', '11-Banzon', '11-Sycip'])
         elif(choice == "4"): dateRange()
         else: break

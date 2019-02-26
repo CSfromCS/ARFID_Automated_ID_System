@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+		<html>
+		<head>
+			<title>Admin
+			</title>
+			<style>
+				body{	background-image:url('UPIS.png');
+						background-size:cover;
+						text-align:center;
+						font-family:'courier new';
+						font-size:48pt;}
+				button{	width:20%;
+						height:125px;
+						background-color:maroon;
+						border:5px solid forestgreen;
+						border-radius:25px;
+						color:white;
+						font-family:'courier new';
+						font-size:30pt;
+						margin:10px;}
+				button:hover{	border:5px solid maroon;
+								background-color:gold;
+								color:black;}
+				.out{	height:50px;
+						width:15%;
+						font-size:20pt;}
+			</style>
+			<script>
+				function lipat(x){
+					if(x==0){window.location="BANZON.html";}				
+					else if(x==1){window.location="HERNANDEZ.html";}
+					else if(x==2){window.location="SYCIP.html"}
+					else if(x==3){
+						var r=confirm("You are about to sign out. Would you like to continue?");
+						if(r==true){
+						window.location="HOME.html"}
+					}	
+				}
+			</script>
+		</head>
+		<body>
+				<p>Choose a section.</p>
+				<button type="button" onclick="lipat(0)">11 - J.A. BANZON</button>
+				<button type="button" onclick="lipat(1)">11 - A.V. HERNANDEZ</button>
+				<button type="button" onclick="lipat(2)">11 - W.Z. SYCIP</button>
+				<br><br>
+				<button type="button" onclick="lipat(3)" class="out">SIGN OUT</button>
+		</body>
+	</html>
