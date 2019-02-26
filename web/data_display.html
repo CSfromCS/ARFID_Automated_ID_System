@@ -5,27 +5,16 @@
 	<meta charset="UTF-8">
 	<script type="text/javascript" src="/eel.js"></script>
 	<script type="text/javascript">
-		<!--document.title = "Data Display";-->
-
-		<!--eel.expose(writeToHTML);-->
-		<!--function writeToHTML(table){-->
-			<!--document.body.innerHTML += table;-->
-		<!--}-->
-
-		eel.expose(helloMarew);
-		function helloMarew(){
-			alert('Hello Marew!');
-		}
 
 		<!--eel.expose(updateInfo);-->
 		function updateInfo(student){
-			document.getElementById('name').innerHTML = student[3] + " " + student[2];
-			document.getElementById('section').innerHTML = student[6];
+			if(!student){
+				document.getElementById('name').innerHTML = student[3] + " " + student[2];
+				document.getElementById('section').innerHTML = student[6];
+
 		}
-
 		function startPage(){
-
-			eel.somefunction()(updateInfo);
+			eel.startStudentPage()(updateInfo);
 			startPage();
 		}
 

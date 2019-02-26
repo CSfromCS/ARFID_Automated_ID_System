@@ -14,10 +14,7 @@ def checkArduino():
         ser = serial.Serial(arduino_ports[0], 9600)
         print("Connected to arduino through port '{}'.".format(arduino_ports[0]))
 
-        ## Insert test for rfid reader
-        ## Insert test for sim module
-
-        print("Connected to rfid and sim module through port '{}'.".format(arduino_ports[0]))
+        ser.write(b'0\n')
 
         while (True):
             ser.write(b'1\n')
@@ -26,12 +23,14 @@ def checkArduino():
                 print("Rfid scanner ready.")
                 break
 
-        # while (True):
-        #     ser.write(b'2\n')    #I dont have sim yet
-        #     fromArduino = readSerial(ser)
-        #     if("Ready" in fromArduino):
-        #         print("GSM ready.")
-        #         break
+        while (True):
+            ser.write(b'2\n')    #I dont have sim yet
+            fromArduino = readSerial(ser)
+            if("Ready" in fromArduino):
+                print("GSM ready.")
+                break
+
+        print("Connected to rfid and sim module through port '{}'.".format(arduino_ports[0]))
 
         return ser
     except Exception as e:
@@ -63,7 +62,7 @@ def sendSMS(ser, student):
     time.sleep(0.2)
     ser.write(bytes(student[8]+'\n', 'utf-8'))
     time.sleep(0.1)
-    ser.write(b"THIS IS SENT BY ARFID\n")
+    ser.write(bytes("{}, THIS IS SENT BY ARFID\n".format(student[7]), 'utf-8'))
     while("COMPLETE" not in readSerial(ser)): pass
     print("Message sent!")
 

@@ -11,66 +11,73 @@ class Arfid():
         self.cnx, self.cursor = setupDbCon(user, database)
 
         self.ser = checkArduino()
+
         initDisplay()
+
         print("Done init.")
 
-    @eel.expose
-    def startStudentPage(self, rfidBefore=None):
+    def studentPage(self):
         rfid = scan(self.ser)
-        if(rfidBefore != rfid):
-            student = searchDb(rfid, self.queries, self.cursor)
-            if student:
-                recordTapDb(rfid, self.queries, self.cnx, self.cursor, student)
-                print("Start!")
-                return student
-                # eel.updateInfo()(student)
-                # sendSMS(self.ser, student)
-            else:
-                print("Unknown")
-                # Display false
-        # self.startStudentPage(rfid)
+        self.student = searchDb(rfid, self.queries, self.cursor)
+        if self.student:
+            recordTapDb(rfid, self.queries, self.cnx, self.cursor, self.student)
+            return self.student
+        else:
+            print("Unknown")
+            return False
 
-    @eel.expose
     def sendToTeacher(self, section, teacher):
-        filePath = createExcelAttendance(section, self.queries, self.cursor)
+        try:
+            filePath = createExcelAttendance(section, self.queries, self.cursor)
 
-        minDate, maxDate = dateRange(self.queries, self.cursor)
+            minDate, maxDate = dateRange(self.queries, self.cursor)
 
-        subject, msg = writeEmail(section, teacher, minDate, maxDate)
+            subject, msg = writeEmail(section, teacher, minDate, maxDate)
 
-        sendEmail(subject, msg, teacher, [filePath])
+            sendEmail(subject, msg, teacher, [filePath])
+            return (True)
+        except Exception as e:
+            return (False, e)
 
-    @eel.expose
     def editRfidInDb(self):
-        rfid = scan()
+        rfid = scan(self.ser)
         updateDbRfid(rfid, self.queries, self.cnx, self.cursor)
 
-    def test(self):
-        self.pages.displayStudent({"id":"69","surname":"Bucas","section":"Sycip"})
+
+
+@eel.expose
+def callStudentPage():
+    return arfid.studentPage()
+
+@eel.expose
+def callSendToTeacher():
+    return arfid.sendToTeacher()
+
+@eel.expose
+def callEditRfidInDb():
+    return arfid.editRfidInDb()
+
+@eel.expose
+def callSendSMS():
+    sendSMS(arfid.ser, arfid.student)
+
 
 arfid = Arfid("students20","tapRecords","cs","test")
 
-# arfid.startStudentPage()
-@eel.expose
-def somefunction():
-    print("Starting somefucntion")
-    global arfid
-    return arfid.startStudentPage()
 
 # Test if these functions work
 # if __name__ == "__main__":
-#     global arfid
 #     arfid = Arfid("students20","tapRecords","cs","test")
-#     # queries, cnx, cursor, ser = initialize("students20","tapRecords","cs","test")
 #
 #     while(True):
-#         choice = input("\nWhat do you want to test:\n"
-#                        "1) Student page\n"
-#                        "2) Send Email\n"
-#                        "3) Edit RFID in Database\n"
-#                        "[1/2/3/x]: ")
+#         choice = '3'
+#         # choice = input("\nWhat do you want to test:\n"
+#         #                "1) Student page\n"
+#         #                "2) Send Email\n"
+#         #                "3) Edit RFID in Database\n"
+#         #                "[1/2/3/x]: ")
 #         if(choice=="1"):
-#             arfid.startStudentPage()
+#             arfid.studentPage()
 #         elif(choice=="2"):
 #             section = input("Which section do you want to tally? ")
 #             teacher = input("Who do you want to send it to? ")
