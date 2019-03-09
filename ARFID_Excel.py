@@ -118,6 +118,6 @@ if __name__ == "__main__":
     queries = setupQueries("students20", "tapRecords")
     cnx, cursor = setupDbCon(dbUser, dbName)
 
-    sections = ['Hernandez','Banzon','Sycip']
+    sections = ['Hernandez','Banzon','SyCip']
     for section in sections:
         createExcelAttendance(section, queries, cursor)

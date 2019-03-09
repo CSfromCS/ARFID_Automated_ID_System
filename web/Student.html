@@ -31,9 +31,10 @@
 					margin-left:3%;
 				}
 				#content{
-					float:right;
-					margin-right:25%;
+					float:left;
 					margin-top:5%;
+					margin-right:1%;
+					text-align: center;
 				}
 				#cropped, #content{
 					display:inline;
@@ -53,43 +54,63 @@
 				input[type=text].pangalan{
 					width:50%;
 				}
+				#tapPic{
+					float:left;
+					padding-top:5%;
+					max-width:400px;
+				}
+				#err{
+					float: left;
+					font-size: 10px;
+					text-align: right;
+					color: gray;
+					opacity: 0.8;
+				}
+				.modal {
+				  display: none; /* Hidden by default */
+				  position: fixed; /* Stay in place */
+				  z-index: 1; /* Sit on top */
+				  left: 0;
+				  top: 0;
+				  width: 100%; /* Full width */
+				  height: 100%; /* Full height */
+				  overflow: auto; /* Enable scroll if needed */
+				  background-color: rgb(0,0,0); /* Fallback color */
+				  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+				}
+				
+				.modal-content {
+				  background-color: #fefefe;
+				  margin: 15% auto; /* 15% from the top and centered */
+				  padding: 20px;
+				  border: 1px solid #888;
+				  width: 80%; /* Could be more or less, depending on screen size */
+				}
 			</style>
 			<script type="text/javascript" src="/eel.js"></script>
-			<script>
-				function lipat(){window.location="HOME.html";}
-
-				function updateInfo(student){
-					if(student){
-						document.getElementById('name').value = student[3] + " " + student[2];
-						document.getElementById('section').value = student[6];
-						d = new Date();
-						document.getElementById('time').value = "Time in: " + d.toLocaleTimeString() + " " + d.toDateString();
-						<!--if(student-->
-						<!--document.getElementById('msg').innerHTML = "A message is being sent to " + student[7];-->
-						eel.callSendSMS();
-					}else{
-						document.getElementById('name').innerHTML = "Unknown rfid, please register card.";
-					}
-					startPage();
-				}
-
-				function startPage(){
-					eel.callStudentPage()(updateInfo);
-				}
-
-			</script>
+			<script type="text/javascript" src="script.js"></script>
 		</head>
-		<body onload="startPage()">
-			<button type="button" onclick="lipat()">BACK</button>
+		<body onload="scan()">
 			<br><br>
 			<div id="container">
-				<img src="beagles crop.png" id="cropped" name="cropped">
+				<img src="beagles crop.png" id="cropped">
 				<div id="content">
 					<input type="text"id="name" placeholder="First name | Last name">
 					<input type="text" id="section" placeholder="Section">
 					<br>
 					<input type="text" id="time" placeholder="Time">
 				</div>
+				<img src="Images/blank.jpg" id="tapPic">
+				<p id="err">ERROR BOX</p>
+				
+			</div>
+
+			<div id="myModal" class="modal">
+
+			  <div class="modal-content">
+				<p>Sending message...</p>
+			  </div>
+
 			</div>
 		</body>
 	</html>
