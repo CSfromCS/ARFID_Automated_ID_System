@@ -1,6 +1,12 @@
 import serial
 import serial.tools.list_ports
 import time
+from datetime import datetime
+
+tapLogFile = open('ARFIDTapLog.txt','a')
+
+def tapLog(rfid):
+    tapLogFile.write(str(datetime.now()) + " | " + rfid + "\n")
 
 # Checks if the Arduino rfid scanner and sim module is active; resets arduino if not
 def checkArduino():
@@ -23,12 +29,12 @@ def checkArduino():
                 print("Rfid scanner ready.")
                 break
 
-        while (True):
-            ser.write(b'2\n')    #I dont have sim yet
-            fromArduino = readSerial(ser)
-            if("Ready" in fromArduino):
-                print("GSM ready.")
-                break
+        # while (True):
+        #     ser.write(b'2\n')    #I dont have sim yet
+        #     fromArduino = readSerial(ser)
+        #     if("Ready" in fromArduino):
+        #         print("GSM ready.")
+        #         break
 
         print("Connected to rfid and sim module through port '{}'.".format(arduino_ports[0]))
 
@@ -52,19 +58,28 @@ def scan(ser):
         line = readSerial(ser)
         print(line)
     ser.write(b'x\n')
-    return line[5:]
-    # return input("RFID UID: ")  #Temporary, while I don't have an arduino at hand
+    tapLog(line[5:])
+    return line[5:] ##Check if scan returns something
 
 # Instruct Arduino to send an SMS message to guardian
 def sendSMS(ser, student):
-    print("Sending message...")
-    ser.write(b'4\n')
-    time.sleep(0.2)
-    ser.write(bytes(student[8]+'\n', 'utf-8'))
-    time.sleep(0.1)
-    ser.write(bytes("{}, THIS IS SENT BY ARFID\n".format(student[7]), 'utf-8'))
-    while("COMPLETE" not in readSerial(ser)): pass
-    print("Message sent!")
+    try:
+        if(student[8]!="nan"):
+            print("Sending message...")
+            ser.write(b'4\n')
+            time.sleep(0.2)
+            ser.write(bytes(student[8]+'\n', 'utf-8'))
+            time.sleep(0.2)
+            ser.write(bytes("{}, THIS IS SENT BY ARFID\n".format(student[7]), 'utf-8'))
+            while("COMPLETE" not in readSerial(ser)): pass
+            print("Message sent!")
+            return True
+        else:
+            print("No guardian number found")
+            return False
+    except Exception as e:
+        print("Error in sendSMS()", e)
+        return False
 
 
 

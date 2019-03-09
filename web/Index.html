@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+		<html>
+		<head>
+			<title>Student</title>
+			<style>
+				body{	
+					margin:3%;
+					font-family:'trebuchet ms';
+				}
+				button{
+					color:black;
+					border:3px black solid;
+					background-color:white;
+					font-size: 22pt;
+					border-radius:100px;
+					font-family:'trebuchet ms';
+					padding: 0.5%;
+					transition-duration: 0.4s;
+					width:5%;
+					outline:none;
+				}
+				button:hover{
+					background-color:#B06D29;
+					border:3px #B06D29 solid;
+					color:white;
+					transition-duration: 0.4s;
+				}
+				img{
+					width:30%;
+					float:left;
+					margin-left:3%;
+				}
+				#content{
+					float:left;
+					margin-right:25%;
+					margin-top:5%;
+				}
+				#content > button{
+					margin:10%;
+					width:100%;
+				}
+				#cropped, #content{
+					display:inline;
+				}
+				input{
+					color:black;
+					border:3px black solid;
+					background-color:white;
+					font-size: 25pt;
+					border-radius:100px;
+					font-family:'trebuchet ms';
+					padding: 2%;
+					margin:5%;
+					outline:none;
+					
+				}
+				input[type=text].pangalan{
+					width:50%;
+				}
+			</style>
+			<script type="text/javascript" src="/eel.js"></script>
+			<script type="text/javascript" src="script.js"></script>
+		</head>
+		<body>
+			<br><br>
+			<div id="container">
+				<img src="beagles crop.png" id="cropped" name="cropped">
+				<div id="content">
+					<button type="button" onclick="window.location='Student.html'">Student Page</button>
+					<button type="button" onclick="window.location='SendEmail.html'">Send Records</button>
+				</div>
+			</div>
+		</body>
+	</html>
