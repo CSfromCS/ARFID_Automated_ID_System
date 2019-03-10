@@ -3,7 +3,6 @@ from ARFID_Database import *
 from ARFID_Display import *
 from ARFID_Excel import *
 from ARFID_Email import *
-from time
 
 logFile = open('ARFIDLog.txt','a')
 
@@ -16,7 +15,7 @@ class Arfid():
         try:
             self.queries = setupQueries(studentTable, tapRecordsTable, teachersTable, teacherClassesTable)
             self.cnx, self.cursor = setupDbCon(user, database)
-            self.ser = checkArduino()
+            self.ser = initArduino()
             initDisplay()
             print("Done init.")
         except Exception as e:

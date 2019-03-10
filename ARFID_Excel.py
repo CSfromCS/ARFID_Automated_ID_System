@@ -7,7 +7,7 @@ def deciToLetters(deci):
     while (deci != 0):
         r = (deci -1) % 26
         deci = deci - r
-        output = output + chr(r + 65)
+        output = chr(r + 65) + output
         deci = deci // 26
     return output
 
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     dbUser = "cs"
     dbName = "test"
 
-    queries = setupQueries("students20", "tapRecords")
+    queries = setupQueries("students20", "tapRecords","teachersTable","teacherClassesTable")
     cnx, cursor = setupDbCon(dbUser, dbName)
 
     sections = ['Hernandez','Banzon','SyCip']

@@ -243,7 +243,7 @@ def dateRange(queries, cursor):
 # Test if these functions work
 if __name__ == "__main__":
     from ARFID_Arduino import *  #for scan()
-    ser = checkArduino()
+    ser = initArduino()
 
     classList = "Excel Records/School Student Roster.xlsx"
 

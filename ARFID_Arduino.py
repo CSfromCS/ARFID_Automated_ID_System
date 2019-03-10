@@ -9,7 +9,7 @@ def tapLog(rfid):
     tapLogFile.write(str(datetime.now()) + " | " + rfid + "\n")
 
 # Checks if the Arduino rfid scanner and sim module is active; resets arduino if not
-def checkArduino():
+def initArduino():
     try:
         arduino_ports = [
             p.device
@@ -73,19 +73,22 @@ def sendSMS(ser, student):
             ser.write(bytes("{}, THIS IS SENT BY ARFID\n".format(student[7]), 'utf-8'))
             while("COMPLETE" not in readSerial(ser)): pass
             print("Message sent!")
+            tapLog("Message sent to " + student[7])
             return True
         else:
             print("No guardian number found")
+            tapLog("Guardian number not found.")
             return False
     except Exception as e:
         print("Error in sendSMS()", e)
+        tapLog("Eror in sendSMS(): " + str(e))
         return False
 
 
 
 # Test if these functions work
 if __name__ == "__main__":
-    ser = checkArduino()
+    ser = initArduino()
     if (ser):
         print("Arduino found!")
 
