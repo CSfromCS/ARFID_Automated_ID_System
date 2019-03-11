@@ -10,6 +10,9 @@ def setupQueries(studentTable, tapRecordsTable, teachersTable, teacherClassesTab
         "checkTapToday" : "SELECT * FROM taprecords WHERE rfid='{}' AND date=curdate();", #Format with rfid
         "recordTapA" : "INSERT INTO "+tapRecordsTable+"(rfid, studentId, date, time) VALUES('{}','{}', CURDATE(), CURTIME());",  #Format with rfid, studentId; records in database
         "recordTapB" : "INSERT INTO "+tapRecordsTable+"(rfid, date, time) VALUES('{}', CURDATE(), CURTIME());",  #Format with rfid; records in database
+        #Message Parent
+        "searchAbsents" : "SELECT id, classNum, surname, firstName, middleName, sex, section, gName, gNum, "+studentTable+".rfid, date FROM "+studentTable+" LEFT JOIN (SELECT studentId, max(date)" \
+                          " AS date FROM "+tapRecordsTable+" GROUP BY studentId) AS tmp_table ON "+studentTable+".id=tmp_table.studentId WHERE date != curDate() OR date IS NULL;",
         #Database to Excel
         "classList" : "SELECT classNum, surname, firstName, middleName, sex FROM "+studentTable+" where section='{}';",    #Format with section; returns section students
         "listDays" : "SELECT date_format(date,'%a, %e %b') FROM "+tapRecordsTable+" GROUP BY date;", #Returns dates that have tap records
@@ -90,6 +93,18 @@ def searchDb(rfid, queries, cursor):
             print("Contact", gName, "through", gNum)
         return id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid
     return False
+
+def searchAbsents(queries, cursor):
+    students = []
+    print('{:^98}'.format("STUDENTS WHO HAVE NOT YET TAPPED TODAY."))
+    print('{:^3}{:^30}{:^10}{:^12}{:^30}{:^12}'.format("Id","Name", "Section", "Last Tap", "Guardian", "Guardian Num"))
+
+    cursor.execute(queries["searchAbsents"])
+    for (id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid, date) in cursor:
+        student = (id, classNum, surname, firstName, middleName, sex, section, gName, gNum, rfid)
+        students.append(student)
+        print('{:^3}{:<30}{:^10}{:^12}{:<30}{:>11}'.format(student[0],student[2]+" "+student[3], student[6], str(date), str(student[7]), str(student[8])))
+    return students if students else False
 
 def hasTapped(rfid, queries, cursor):
     cursor.execute(queries["checkTapToday"].format(rfid))
@@ -182,7 +197,7 @@ def importExcelToDb(filePath:str, sheetNames:list, queries, cursor, cnx):
                 # else:
                 #     g = "???reply???"
                 #     f = g
-                print(a,b,c,d,e,f,g,h,i)
+                print('{:^10}{:^3} {:<15}{:<25}{:<15} {:<30} {:>11} {:^1} {:<11}'.format(a,b,c,d,e,f,g,h,i))
                 cursor.execute(queries["importExcel"].format(a,b,c,d,e,f,g,h,i))
         cnx.commit() #Send the data to mysql [THIS WILL 3WRITE ON THE DATABASE]
     except Exception as e:
@@ -243,14 +258,14 @@ def dateRange(queries, cursor):
 # Test if these functions work
 if __name__ == "__main__":
     from ARFID_Arduino import *  #for scan()
-    ser = initArduino()
+    # ser = initArduino()
 
     classList = "Excel Records/School Student Roster.xlsx"
 
     dbUser = "cs"
-    dbName = "test4"
+    dbName = "test"
 
-    queries = setupQueries("students","tapRecords","teachers","teacherClasses")
+    queries = setupQueries("students20","tapRecords","teachers","teacherClasses")
     cnx, cursor = setupDbCon(dbUser, dbName)
 
     sections = ["Banzon", "Hernandez", "SyCip", "Faculty"]
@@ -258,7 +273,7 @@ if __name__ == "__main__":
 
     while(True):
         choice = input("\nWhat do you want to test:\n1) Record tap in database\n2) Update RFID in database\n"
-                       "3) Import from Excel classlist to Database\n4) Get first and last tap dates\n[1/2/3/4/5/6/7/x]: ")
+                       "3) Import from Excel classlist to Database\n4) Get first and last tap dates\n[1/2/3/4/5/6/7/8/x]: ")
         if(choice == "1"): recordTapDb(rfid, queries, cnx, cursor, searchDb(rfid, queries, cursor))
         elif(choice == "2"):
             rfid = scan(ser)
@@ -268,4 +283,5 @@ if __name__ == "__main__":
         elif(choice == "5"): returnEmailsClasses(queries, cursor)
         elif(choice == "6"): exportDbToExcel(classList, sections, sheetNames, queries, cursor)
         elif(choice == "7"): createTables(queries, cursor, cnx)
+        elif(choice == "8"): print(searchAbsents(queries, cursor))
         else: break

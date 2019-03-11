@@ -7,29 +7,6 @@ from os.path import basename
 emailUser = 'upisarfid@gmail.com'
 emailPass = 'JABeagle'
 
-# teachers = {
-#     "Pineda, L." : {"name" : "Ms. Laurice A. Pineda",
-#                     "email" : "lapineda@up.edu.ph"},
-#     "Guerrero, C." : {"name" : "Prof. Charlaine G. Guerrero",
-#                       "email" : "cgguerrero@up.edu.ph"},
-#     "Macapagal, M." : {"name" : "Mr. Molave Nemesio C. Macapagal",
-#                        "email" : "mcmacapagal2@up.edu.ph"},
-#     "Prieto, C." : {"name" : "Bb. Mary Christine C. Prieto",
-#                     "email" : "mcprieto@up.edu.ph"},
-#     "Baygan, M." : {"name" : "Ms. Maria Araceli M. Baygan",
-#                     "email" : ""},  #Email
-#     "Ereno, R." : {"name" : "Prof. Rhodora F. Ereno",
-#                    "email" : ""},   #Email
-#     "Velasquez, R." : {"name" : "Prof. Roselle J. Velasquez",
-#                        "email" : ""},   #Email
-#     "Taduran, R." : {"name" : "Prof. Regina Carla R. Taduran",
-#                      "email" : "rrtaduran@up.edu.ph"},
-#     "Vargas, M." : {"name" : "Prof. Ma. Lourdes J. Vargas",
-#                     "email" : "vargasdet@gmail.com"},
-#     "Sarabia, C." : {"name" : "Christian Sarabia",
-#                      "email" : "magorcs@gmail.com"}
-# }
-
 def writeEmail(sections, teacher, minDate, maxDate):
     subjectSection = ""
     listSection = ""
@@ -37,7 +14,7 @@ def writeEmail(sections, teacher, minDate, maxDate):
         subjectSection += section + " "
         listSection += section + "\n"
 
-    msg = "\n"+teacher+"\n\nHere is the attendance record of:\n\n{}\nfrom {} to {}.\n".format(listSection, minDate, maxDate)
+    msg = "\n"+teacher+"\n\nHere are the attendance records of:\n\n{}\nfrom {} to {}.\n".format(listSection, minDate, maxDate)
     msg += "\n______________________________________________________________\nThis automated message is created and sent by ARFID. ARFID is an automated RFID-based attendance system that records "\
            "\nand tallies attendance to provide efficient and accurate records. For any concerns, please email: upisarfid@gmail.com"
 
@@ -60,6 +37,8 @@ def sendEmail(subject: str, text: str, to: str, toEmail: str, files= None, bcc: 
 
         msg.attach(MIMEText(text))
 
+        print("Message: {}".format(msg.as_string()))
+
         for f in files or []:
             with open(f, "rb") as fil:
                 ext = f.split('.')[-1:]
@@ -69,12 +48,11 @@ def sendEmail(subject: str, text: str, to: str, toEmail: str, files= None, bcc: 
 
         smtp = smtplib.SMTP(host="smtp.gmail.com", port= 587)
         try:
-            # smtp.starttls()
-            # smtp.login(username,password)
-            # print("Logged in.")
-            # # smtp.sendmail(send_from, send_to, msg.as_string())
-            # print("Message: {}".format(msg.as_string()))
-            # print("Email sent!")
+            smtp.starttls()
+            smtp.login(username,password)
+            print("Logged in.")
+            # smtp.sendmail(send_from, send_to, msg.as_string())
+            print("Email sent!")
             return True
         except Exception as f:
             print("Error in sendEmail()*", f)

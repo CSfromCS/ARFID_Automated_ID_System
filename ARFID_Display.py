@@ -6,7 +6,7 @@ def eelStart():
         eel.init('web')
         web_app_options = {
             'mode': "chrome-app",  # or "chrome"
-            'chromeFlags': ["--start-fullscreen", "--allow-file-access-from-files", '–allow-file-access-from-files']
+            'chromeFlags': ["--start-fullscreen", '–allow-file-access-from-files']
         }
         eel.start('Index.html')#, options=web_app_options)
     except Exception as e:

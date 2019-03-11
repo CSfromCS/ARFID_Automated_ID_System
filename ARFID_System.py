@@ -57,7 +57,6 @@ class Arfid():
                         teacherFiles[teacher] = [files[s]]
 
                 subject, msg = writeEmail(teacherClasses[teacher], teacher, minDate, maxDate)
-                print(subject, msg, teacher, teacherEmails[teacher], teacherFiles[teacher])
                 sendEmail(subject, msg, teacher, teacherEmails[teacher], teacherFiles[teacher])
                 log("Emailed to {}:{}".format(teacher, str(teacherClasses[teacher])))
             return (True)
@@ -87,16 +86,24 @@ def callEditRfidInDb():
 @eel.expose
 def callSendSMS():
     time.sleep(3)
-    # return sendSMS(arfid.ser, arfid.student)
-    print("SMS sent.")
-    return False
+    return sendSMS(arfid.ser, arfid.student)
+
+@eel.expose
+def callSendAbsentSMS(students):
+    print(students[0])
+    time.sleep(0.5)
+    sendAbsentSMS(arfid.ser, students[0])
+    return students[1:] if students[1:] else False
 
 @eel.expose
 def callScan():
     return scan(arfid.ser)
 
+@eel.expose
+def callSearchAbsents():
+    return searchAbsents(arfid.queries, arfid.cursor)
 
-arfid = Arfid("cs","test","students20","tapRecords","teachers","teacherClasses")
+arfid = Arfid("cs","test","students20","tapRecords","teacherstest","teacherClassesTest")
 
 
 ##Test if these functions work

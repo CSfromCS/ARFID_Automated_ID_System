@@ -3,9 +3,14 @@
 		<head>
 			<title>Student</title>
 			<style>
+				html{
+					border:20px inset #B06D29;
+					height: 96%;
+				}
 				body{	
-					margin:3%;
+					margin:5%;
 					font-family:'trebuchet ms';
+					overflow-y:hidden;
 				}
 				button{
 					color:black;
@@ -25,92 +30,217 @@
 					color:white;
 					transition-duration: 0.4s;
 				}
-				img{
-					width:30%;
-					float:left;
-					margin-left:3%;
-				}
-				#content{
-					float:left;
-					margin-top:5%;
-					margin-right:1%;
-					text-align: center;
-				}
-				#cropped, #content{
-					display:inline;
-				}
 				input{
 					color:black;
 					border:3px black solid;
 					background-color:white;
-					font-size: 15pt;
+					font-size: 20pt;
 					border-radius:100px;
 					font-family:'trebuchet ms';
 					padding: 2%;
+					padding-left: 25px;
 					margin:5%;
 					outline:none;
-					
+					width:150%;
 				}
-				input[type=text].pangalan{
-					width:50%;
+				.container{
+					margin:1em;
+					margin-left: 0;
+					display:flex;
+					flex-direction:row;
+					flex-wrap:wrap;
 				}
-				#tapPic{
-					float:left;
-					padding-top:5%;
-					max-width:400px;
+				.content{
+					flex:1;
+					margin:.5em;
+					margin-left:0;
+					margin-top:8em;
+					padding:1em;
 				}
+				.pic{
+					flex:1;
+					margin:.5em;
+					padding:1em;
+				}
+				div img{
+					max-width:100%;
+				}
+				.logo{
+					height:10%;
+					width:10%;
+					float:right;
+					margin-right:0;
+					padding-right:1%;
+				}
+				#appsci{
+					transform: scale(1.23);
+					padding-bottom: 90px;
+				}
+				body{
+					padding-top: 3.5%;
+				}
+				div#preload{ 
+					display: none; 
+				}
+				#modalInfo{
+					text-align: center;
+				}
+				#myModal {
+				  display: none;
+				  position: fixed;
+				  z-index: 1;
+				  left: 0;
+				  top: 0;
+				  width: 100%;
+				  height: 100%;
+				  overflow: disabled; 
+				  background-color: rgb(0,0,0);
+				  background-color: rgba(0,0,0,0.4); 
+				}
+				
+				#modal-content {
+				  display: block;
+				  background-color: #fefefe;
+				  margin: 22% auto; 
+				  padding: 20px;
+				  border: 1px solid #888;
+				  border-radius: 20px;
+				  width: 40%; 
+				  font-size: 25px;
+				}
+				
 				#err{
-					float: left;
+					float: right;
 					font-size: 10px;
 					text-align: right;
 					color: gray;
-					opacity: 0.8;
-				}
-				.modal {
-				  display: none; /* Hidden by default */
-				  position: fixed; /* Stay in place */
-				  z-index: 1; /* Sit on top */
-				  left: 0;
-				  top: 0;
-				  width: 100%; /* Full width */
-				  height: 100%; /* Full height */
-				  overflow: auto; /* Enable scroll if needed */
-				  background-color: rgb(0,0,0); /* Fallback color */
-				  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-				}
-				
-				.modal-content {
-				  background-color: #fefefe;
-				  margin: 15% auto; /* 15% from the top and centered */
-				  padding: 20px;
-				  border: 1px solid #888;
-				  width: 80%; /* Could be more or less, depending on screen size */
+					opacity: 0.6;
 				}
 			</style>
 			<script type="text/javascript" src="/eel.js"></script>
 			<script type="text/javascript" src="script.js"></script>
 		</head>
 		<body onload="scan()">
-			<br><br>
-			<div id="container">
-				<img src="beagles crop.png" id="cropped">
-				<div id="content">
-					<input type="text"id="name" placeholder="First name | Last name">
-					<input type="text" id="section" placeholder="Section">
-					<br>
-					<input type="text" id="time" placeholder="Time">
+			<div>
+				<img src="Images/jabeagle.png" class="logo" id="jab">
+				<img src="Images/appsci.png" class="logo" id="appsci">
+			</div>
+			
+			<div class="container">
+				<div class="pic">
+					<img src="Images/blank.jpg" id="tapPic">
 				</div>
-				<img src="Images/blank.jpg" id="tapPic">
-				<p id="err">ERROR BOX</p>
 				
+				<div class="content">
+					<input type="text" id="name" placeholder="First name | Last name" readonly>
+					<input type="text" id="section" placeholder="Section" readonly>
+					<input type="text" id="time" placeholder="Time in" readonly>
+				</div>
 			</div>
-
-			<div id="myModal" class="modal">
-
-			  <div class="modal-content">
-				<p>Sending message...</p>
+			
+			<div id="myModal">
+			  <div id="modal-content">
+				<p id="modalInfo">Sending message...</p>
 			  </div>
-
 			</div>
+			
+			<div id="preload">
+				<img src='Images/1.jpg'/>
+				<img src='Images/2.jpg'/>
+				<img src='Images/3.jpg'/>
+				<img src='Images/4.jpg'/>
+				<img src='Images/5.jpg'/>
+				<img src='Images/6.jpg'/>
+				<img src='Images/7.jpg'/>
+				<img src='Images/8.jpg'/>
+				<img src='Images/9.jpg'/>
+				<img src='Images/10.jpg'/>
+				<img src='Images/11.jpg'/>
+				<img src='Images/12.jpg'/>
+				<img src='Images/13.jpg'/>
+				<img src='Images/14.jpg'/>
+				<img src='Images/15.jpg'/>
+				<img src='Images/16.jpg'/>
+				<img src='Images/17.jpg'/>
+				<img src='Images/18.jpg'/>
+				<img src='Images/19.jpg'/>
+				<img src='Images/20.jpg'/>
+				<img src='Images/21.jpg'/>
+				<img src='Images/22.jpg'/>
+				<img src='Images/23.jpg'/>
+				<img src='Images/24.jpg'/>
+				<img src='Images/25.jpg'/>
+				<img src='Images/26.jpg'/>
+				<img src='Images/27.jpg'/>
+				<img src='Images/28.jpg'/>
+				<img src='Images/29.jpg'/>
+				<img src='Images/30.jpg'/>
+				<img src='Images/31.jpg'/>
+				<img src='Images/32.jpg'/>
+				<img src='Images/33.jpg'/>
+				<img src='Images/34.jpg'/>
+				<img src='Images/35.jpg'/>
+				<img src='Images/36.jpg'/>
+				<img src='Images/37.jpg'/>
+				<img src='Images/38.jpg'/>
+				<img src='Images/39.jpg'/>
+				<img src='Images/40.jpg'/>
+				<img src='Images/41.jpg'/>
+				<img src='Images/42.jpg'/>
+				<img src='Images/43.jpg'/>
+				<img src='Images/44.jpg'/>
+				<img src='Images/45.jpg'/>
+				<img src='Images/46.jpg'/>
+				<img src='Images/47.jpg'/>
+				<img src='Images/48.jpg'/>
+				<img src='Images/49.jpg'/>
+				<img src='Images/50.jpg'/>
+				<img src='Images/51.jpg'/>
+				<img src='Images/52.jpg'/>
+				<img src='Images/53.jpg'/>
+				<img src='Images/54.jpg'/>
+				<img src='Images/55.jpg'/>
+				<img src='Images/56.jpg'/>
+				<img src='Images/57.jpg'/>
+				<img src='Images/58.jpg'/>
+				<img src='Images/59.jpg'/>
+				<img src='Images/60.jpg'/>
+				<img src='Images/61.jpg'/>
+				<img src='Images/62.jpg'/>
+				<img src='Images/63.jpg'/>
+				<img src='Images/64.jpg'/>
+				<img src='Images/65.jpg'/>
+				<img src='Images/66.jpg'/>
+				<img src='Images/67.jpg'/>
+				<img src='Images/68.jpg'/>
+				<img src='Images/69.jpg'/>
+				<img src='Images/70.jpg'/>
+				<img src='Images/71.jpg'/>
+				<img src='Images/72.jpg'/>
+				<img src='Images/73.jpg'/>
+				<img src='Images/74.jpg'/>
+				<img src='Images/75.jpg'/>
+				<img src='Images/76.jpg'/>
+				<img src='Images/77.jpg'/>
+				<img src='Images/78.jpg'/>
+				<img src='Images/79.jpg'/>
+				<img src='Images/80.jpg'/>
+				<img src='Images/81.jpg'/>
+				<img src='Images/82.jpg'/>
+				<img src='Images/83.jpg'/>
+				<img src='Images/84.jpg'/>
+				<img src='Images/85.jpg'/>
+				<img src='Images/86.jpg'/>
+				<img src='Images/87.jpg'/>
+				<img src='Images/88.jpg'/>
+				<img src='Images/89.jpg'/>
+				<img src='Images/90.jpg'/>
+				<img src='Images/91.jpg'/>
+				<img src='Images/92.jpg'/>
+				<img src='Images/93.jpg'/>
+				<img src='Images/94.jpg'/>
+			</div>
+			
+			<p id="err"></p>
 		</body>
 	</html>

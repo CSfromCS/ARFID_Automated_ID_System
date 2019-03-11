@@ -43,7 +43,7 @@ def initArduino():
         print(e)
         print("Retrying in 5 seconds...")
         time.sleep(5)
-        return checkArduino()
+        return initArduino()
 
 def readSerial(ser):
     line = str(ser.readline())[2:-5]
@@ -56,7 +56,7 @@ def scan(ser):
     line = ""
     while("UID" not in line):
         line = readSerial(ser)
-        print(line)
+    print(line)
     ser.write(b'x\n')
     tapLog(line[5:])
     return line[5:] ##Check if scan returns something
@@ -66,24 +66,47 @@ def sendSMS(ser, student):
     try:
         if(student[8]!="nan"):
             print("Sending message...")
-            ser.write(b'4\n')
-            time.sleep(0.2)
-            ser.write(bytes(student[8]+'\n', 'utf-8'))
-            time.sleep(0.2)
-            ser.write(bytes("{}, THIS IS SENT BY ARFID\n".format(student[7]), 'utf-8'))
-            while("COMPLETE" not in readSerial(ser)): pass
-            print("Message sent!")
+            # ser.write(b'4\n')
+            # time.sleep(0.2)
+            # ser.write(bytes(student[8]+'\n', 'utf-8'))
+            # time.sleep(0.2)
+            # ser.write(bytes("{}, THIS IS SENT BY ARFID\n".format(student[7]), 'utf-8'))
+            # while("COMPLETE" not in readSerial(ser)): pass
+            print("[{}]----{}----{} of {} has arrived today at {}. //This message is sent by ARFID. " \
+                  "Please do not reply. You may contact us through upisarfid@gmail.com.".format(datetime.now().strftime('%a, %b %d, %Y'),student[7],student[3]+" "+student[2],student[6],datetime.now().strftime('%I:%M:%S %p')))
+            print("Message sent to {} through {}!\n".format(student[7], student[8]))
             tapLog("Message sent to " + student[7])
             return True
         else:
-            print("No guardian number found")
+            print("No guardian number found\n")
             tapLog("Guardian number not found.")
             return False
     except Exception as e:
-        print("Error in sendSMS()", e)
-        tapLog("Eror in sendSMS(): " + str(e))
+        print("Error in sendSMS():", e)
+        tapLog("Error in sendSMS(): " + str(e))
         return False
 
+def sendAbsentSMS(ser, student):
+    try:
+        if(student[8]!="nan"):
+            print("Sending message...")
+            # ser.write(b'4\n')
+            # time.sleep(0.2)
+            # ser.write(bytes(student[8]+'\n', 'utf-8'))
+            # time.sleep(0.2)
+            # ser.write(bytes("{}, THIS IS SENT BY ARFID\n".format(student[7]), 'utf-8'))
+            # while("COMPLETE" not in readSerial(ser)): pass
+            print("Message sent to {} through {}!\n".format(student[7], student[8]))
+            # tapLog("Message sent to " + student[7])
+            return True
+        else:
+            print("No guardian number found\n")
+            tapLog("Guardian number not found.")
+            return False
+    except Exception as e:
+        print("Error in sendAbsentSMS():", e)
+        tapLog("Error in sendAbsentSMS(): " + str(e))
+        return False
 
 
 # Test if these functions work
