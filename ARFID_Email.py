@@ -4,8 +4,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from os.path import basename
 
-emailUser = 'upisarfid@gmail.com'
-emailPass = 'JABeagle'
+emailUser = ''  #insert email here
+emailPass = ''  #inser email password here
 
 def writeEmail(sections, teacher, minDate, maxDate):
     subjectSection = ""
