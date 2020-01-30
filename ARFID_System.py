@@ -1,3 +1,5 @@
+# ARFID RULES!!!
+
 from ARFID_Arduino import *
 from ARFID_Database import *
 from ARFID_Display import *
